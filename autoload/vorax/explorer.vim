@@ -101,10 +101,25 @@ function! vorax#explorer#OpenDbObject(bang, ...) "{{{
     let owner = ''
     let object_name = name
   endif
+
   " compute the buffer/file name
   let file_name = s:BufferName(type, object_name)
-  if a:bang == ""
-    if a:bang == "" && filereadable(file_name)
+
+  let dbname = vorax#sqlplus#Properties()['user'] . '@' . vorax#sqlplus#Properties()['db']
+
+  if exists('g:vorax_save_source') && (has_key(g:vorax_save_source, dbname) == 1)
+      let file_name = g:vorax_save_source[dbname] . '/' . file_name
+  endif
+
+  if exists('g:vorax_always_overwrite_localfile') 
+     \ && g:vorax_always_overwrite_localfile
+      let bang = "!"
+  else
+      let bang = a:bang
+  endif
+
+  if bang == ""
+    if bang == "" && filereadable(file_name)
       call s:OpenVoraxBuffer(file_name)
       call vorax#utils#SpitInfo("The local file was openned for edit not " . 
             \ "the definition from the database!")
@@ -128,7 +143,7 @@ function! vorax#explorer#OpenDbObject(bang, ...) "{{{
         return
       endif
       call s:OpenVoraxBuffer(file_name)
-      if a:bang == "!"
+      if bang == "!"
         " clear the buffer content
         normal! gg"_dG
         if g:vorax_edit_warning && filereadable(file_name)
