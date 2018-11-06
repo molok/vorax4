@@ -98,7 +98,7 @@ function! vorax#explorer#OpenDbObject(bang, ...) "{{{
     let owner = parts[0]
     let object_name = parts[1]
   else
-    let owner = ''
+    let owner = vorax#sqlplus#Properties()['user'] 
     let object_name = name
   endif
 
@@ -108,7 +108,7 @@ function! vorax#explorer#OpenDbObject(bang, ...) "{{{
   let dbname = vorax#sqlplus#Properties()['user'] . '@' . vorax#sqlplus#Properties()['db']
 
   if exists('g:vorax_save_source') && (has_key(g:vorax_save_source, dbname) == 1)
-      let file_name = g:vorax_save_source[dbname] . '/' . file_name
+      let file_name = g:vorax_save_source[dbname] . '/' . owner . '.' . file_name
   endif
 
   if exists('g:vorax_always_overwrite_localfile') 
