@@ -52,10 +52,10 @@ declare
 
     th := dbms_metadata.add_transform(h, 'MODIFY');
 
-    if owner = user then
-      -- don't include owner if matches the current connected user
-      dbms_metadata.set_remap_param(th, 'REMAP_SCHEMA', user, '');
-    end if;
+    --if owner = user then
+    --  -- don't include owner if matches the current connected user
+    --  dbms_metadata.set_remap_param(th, 'REMAP_SCHEMA', user, '');
+    --end if;
 
     th := dbms_metadata.add_transform(h, 'DDL');
     if obj_type = 'TABLE' then
